@@ -40,7 +40,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Optional<String> token = jwtTokenProvider.resolveAccessToken(request);
 
-        if (token.isPresent() || !jwtTokenProvider.validateToken(token.get())) {
+        if (token.isEmpty() || !jwtTokenProvider.validateToken(token.get())) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
                     "토큰이 존재하지 않거나 유효하지 않습니다."
