@@ -52,16 +52,24 @@ public class ProductServiceImpl implements ProductService{
                         product.getImageUrl(),
                         product.getApproved(),
                         product.getDescription()))
+                .orElse(null);
+    }
+
+    @Override
+    public ProductResponseDto findProductByIdElseThrow(Long id) {
+        return productRepository.findProductById(id)
+                .map(product -> new ProductResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getImageUrl(),
+                        product.getApproved(),
+                        product.getDescription()))
                 .orElseThrow(() ->
                         new ProductNotFoundException(
                                 "해당 ID의 상품을 찾을 수 없습니다."
                         )
                 );
-    }
-
-    @Override
-    public ProductResponseDto findProductByIdElseThrow(Long id) {
-        return null;
     }
 
     @Override
