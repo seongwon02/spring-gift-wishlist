@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.service.MemberService;
+import gift.util.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ public class MemberControllerTest {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @LocalServerPort
     private int port;
 
@@ -41,7 +45,7 @@ public class MemberControllerTest {
     void 정상적인_회원가입() {
 
         MemberRequestDto requestDto = new MemberRequestDto(
-                "user@email.com",
+                "user3@example.com",
                 "0000"
         );
 
@@ -56,7 +60,7 @@ public class MemberControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         assert dtoBody != null;
-        assertThat(dtoBody.getToken()).isEqualTo("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInJvbGUiOiJVU0VSIn0.gCloYoSbt08x4LFJJxEq4jHTuFQBA7voNK4ERgc1khc");
+        assertThat(jwtTokenProvider.getIdFromToken(dtoBody.getToken())).isEqualTo("4");
     }
 
     @DisplayName("정상적인 로그인")
@@ -79,7 +83,7 @@ public class MemberControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assert dtoBody != null;
-        assertThat(dtoBody.getToken()).isEqualTo("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiJ9.6r7j4hrGuAxuVp6BRfl0rpYUrhx0tRyFtuIkrkPhoEI");
+        assertThat(jwtTokenProvider.getIdFromToken(dtoBody.getToken())).isEqualTo("1");
     }
 
     @DisplayName("회원가입할 때 이메일 형식이 아닌 문자열을 보낼 시, 400 에러코드와 메세지 반환하는지 테스트")
